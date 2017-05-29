@@ -21,7 +21,7 @@
         var $error;
 
 
-        function KCSV_Reader( $filename, $has_header=1, $use_cache=0, $delimiter=',', $enclosure='"' ){
+        function __construct( $filename, $has_header=1, $use_cache=0, $delimiter=',', $enclosure='"' ){
             global $FUNCS;
 
             $this->filename = $filename;
@@ -204,7 +204,7 @@
         }
 
         ////////////////////////////////// Tags ////////////////////////////////
-        function csv_reader_handler( $params, $node ){
+        static function csv_reader_handler( $params, $node ){
             global $FUNCS, $CTX, $PAGE;
 
             extract( $FUNCS->get_named_vars(
@@ -430,7 +430,7 @@
             return $html;
         }
 
-        function csv_headers_handler( $params, $node ){
+        static function csv_headers_handler( $params, $node ){
             global $FUNCS, $CTX;
 
             extract( $FUNCS->get_named_vars(
@@ -462,7 +462,7 @@
             return $html;
         }
 
-        function csv_columns_handler( $params, $node ){
+        static function csv_columns_handler( $params, $node ){
             global $FUNCS, $CTX;
 
             extract( $FUNCS->get_named_vars(

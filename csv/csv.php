@@ -365,6 +365,7 @@
                     $total_records_on_page = ( $count<$limit ) ? $count : $limit;
                     $CTX->set( 'k_count', $x + $startcount );
                     $CTX->set( 'k_total_records', $total_rows );
+                    $CTX->set( 'k_total_records_for_pagination', $total_rows );
                     $CTX->set( 'k_total_records_on_page', $total_records_on_page );
                     $CTX->set( 'k_current_record', $first_record_on_page + $x );
                     $CTX->set( 'k_absolute_count', $first_record_on_page + $x ); //same as current record

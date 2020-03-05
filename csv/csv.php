@@ -21,12 +21,13 @@
         var $error;
 
 
-        function __construct( $filename, $has_header=1, $use_cache=0, $delimiter=',', $enclosure='"' ){
+        function __construct( $filename, $has_header=1, $use_cache=0, $delimiter=',', $enclosure='"', $escape='"' ){
             global $FUNCS;
 
             $this->filename = $filename;
             $this->delimiter = $delimiter;
             $this->enclosure = $enclosure;
+            $this->escape = $escape;
             $this->has_header = $has_header;
             $this->use_cache = $use_cache;
 
@@ -60,7 +61,7 @@
             $row = array();
 
             while( 1 ){
-                $row = fgetcsv( $this->fp, 0, $this->delimiter, $this->enclosure );
+                $row = fgetcsv( $this->fp, 0, $this->delimiter, $this->enclosure, $this->escape );
                 if( $row==false || is_null($row) ){ // EOF or invalid file handle
                     return false;
                 }
@@ -214,6 +215,7 @@
                     'use_cache'=>'0',
                     'delimiter'=>'',
                     'enclosure'=>'',
+                    'escape'=>'', /* escape char being used by the csv.. default is '\' to match the default of PHP */
 
                     'limit'=>'',
                     'offset'=>'0',
@@ -250,6 +252,12 @@
                 die("ERROR: Tag \"".$node->name."\": 'enclosure' must be a single character");
             }
 
+            $escape = trim( $escape );
+            if( !strlen($escape) ){ $escape=$enclosure; } // RFC-4180 compliance
+            elseif( strlen($escape)>1 ){
+                die("ERROR: Tag \"".$node->name."\": 'escape' must be a single character");
+            }
+
             $limit = $FUNCS->is_non_zero_natural( $limit ) ? intval( $limit ) : 1000;
             $offset = $FUNCS->is_natural( $offset ) ? intval( $offset ) : 0;
             $startcount = $FUNCS->is_int( $startcount ) ? intval( $startcount ) : 1;
@@ -274,7 +282,7 @@
             }
 
             // get down to business ..
-            $csv = new KCSV_Reader( $file, $has_header, $use_cache, $delimiter );
+            $csv = new KCSV_Reader( $file, $has_header, $use_cache, $delimiter, $enclosure, $escape );
             if( $FUNCS->is_error($csv->error) ){ die("ERROR: Tag \"".$node->name."\": " . $csv->error->err_msg); }
 
             $total_rows = $csv->row_count();
